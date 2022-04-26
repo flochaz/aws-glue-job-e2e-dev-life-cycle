@@ -7,7 +7,8 @@ from aws_cdk import (
     aws_sns as sns,
     aws_sns_subscriptions as subs,
     aws_glue_alpha as glue,
-    aws_glue as cfnGlue
+    aws_glue as cfnGlue,
+    aws_s3 as s3,
 )
 
 import os
@@ -58,9 +59,10 @@ class InfrastructureStack(Stack):
         )
         glue_trigger.add_depends_on(glue_crawler)
         
-        
+        output_bucket = s3.Bucket(self, "output_bucket");
        # TODO: Parameterize output bucket by 1. creating the output bucket 2. adding it to default_arguments
         glue.Job(self, "PySparkEtlJob",
+            default_arguments={"--output_bucket": output_bucket.bucket_name},
             role=glue_role,
             executable=glue.JobExecutable.python_etl(
                 glue_version=glue.GlueVersion.V3_0,

@@ -16,8 +16,10 @@ glueContext = GlueContext(SparkContext.getOrCreate())
 db_name = "payments"
 tbl_name = "medicare"
 
+args = getResolvedOptions(sys.argv, ['output_bucket'])
+
 # S3 location for output
-output_dir = "s3://glue-sample-target/output-dir/medicare_parquet"
+output_dir = args['output_bucket']
 
 # Read data into a DynamicFrame using the Data Catalog metadata
 medicare_dyf = glueContext.create_dynamic_frame.from_catalog(database = db_name, table_name = tbl_name)
