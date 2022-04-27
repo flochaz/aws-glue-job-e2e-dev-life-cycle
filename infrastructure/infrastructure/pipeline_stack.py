@@ -25,12 +25,10 @@ class WorkshopPipelineStack(Stack):
                 "Synth",
                 input=pipelines.CodePipelineSource.code_commit(repo, "master"),
                 commands=[
-                    "cd examples",
-                    "jupyter nbconvert --to script data_cleaning_and_lambda.ipynb",
-                    "cd -",
                     "cd infrastructure",
                     "npm install -g aws-cdk",  # Installs the cdk cli on Codebuild
                     "pip install -r requirements.txt",  # Instructs Codebuild to install required packages
+                    "jupyter nbconvert --to script ../examples/data_cleaning_and_lambda.ipynb",
                     "npx cdk synth",
                 ],
                 primary_output_directory="infrastructure/cdk.out"

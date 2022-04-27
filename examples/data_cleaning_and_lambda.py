@@ -12,14 +12,21 @@ from pyspark.sql.types import StringType
 
 glueContext = GlueContext(SparkContext.getOrCreate())
 
+
+
+
 # Data Catalog: database and table name
 db_name = "payments"
 tbl_name = "medicare"
 
-args = getResolvedOptions(sys.argv, ['output_bucket'])
+# args = getResolvedOptions(sys.argv, ['output_bucket'])
 
-# S3 location for output
-output_dir = args['output_bucket']
+try:
+    args = getResolvedOptions(sys.argv, ['output_bucket'])
+    output_dir = args['output_bucket']
+except:
+    # S3 location for output
+    output_dir = 's3://deploy-gluejob-outputbucketf8672071-gg1mjydm1p1m/'
 
 # Read data into a DynamicFrame using the Data Catalog metadata
 medicare_dyf = glueContext.create_dynamic_frame.from_catalog(database = db_name, table_name = tbl_name)
@@ -52,5 +59,12 @@ medicare_nest = medicare_tmp.apply_mapping([('drg definition', 'string', 'drg', 
                              ('ATP', 'string', 'charges.total_pay', 'double'),
                              ('AMP', 'string', 'charges.medicare_pay', 'double')])
 
+
+medicare_nest.show()
+
+
 # Write it out in Parquet
-glueContext.write_dynamic_frame.from_options(frame = medicare_nest, connection_type = "s3", connection_options = {"path": output_dir}, format = "parquet")
+glueContext.write_dynamic_frame.from_options(frame = medicare_nest, connection_type = "s3", connection_options = {"path": output_dir}, format = "glueparquet")
+
+
+
