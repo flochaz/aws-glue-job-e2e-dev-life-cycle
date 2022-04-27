@@ -72,3 +72,4 @@ class InfrastructureStack(Stack):
             ),
             description="an example python ETL job"
         )
+        output_bucket.grant_write(glue_role);
