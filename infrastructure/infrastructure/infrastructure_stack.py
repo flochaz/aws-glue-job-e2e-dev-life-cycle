@@ -8,6 +8,7 @@ from aws_cdk import (
     aws_sns_subscriptions as subs,
     aws_glue_alpha as glue,
     aws_glue as cfnGlue,
+    custom_resources as cr,
     aws_s3 as s3,
 )
 
@@ -59,6 +60,19 @@ class InfrastructureStack(Stack):
         )
         glue_trigger.add_depends_on(glue_crawler)
         
+        aws_custom = cr.AwsCustomResource(self, "aws-custom",
+            on_update=cr.AwsSdkCall(
+                service="Glue",
+                action="startCrawler",
+                parameters={
+                    "Name": crawler_name,
+                },
+                physical_resource_id=cr.PhysicalResourceId.of(crawler_name)
+            ),
+            policy=cr.AwsCustomResourcePolicy.from_sdk_calls(
+                resources=cr.AwsCustomResourcePolicy.ANY_RESOURCE
+            )
+        )
         output_bucket = s3.Bucket(self, "output_bucket");
        # TODO: Parameterize output bucket by 1. creating the output bucket 2. adding it to default_arguments
         glue.Job(self, "PySparkEtlJob",
