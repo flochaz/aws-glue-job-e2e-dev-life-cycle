@@ -61,7 +61,7 @@ class InfrastructureStack(Stack):
         )
         glue_trigger.add_depends_on(glue_crawler)
         
-        aws_custom = cr.AwsCustomResource(self, "aws-custom",
+        aws_custom = cr.AwsCustomResource(self, "startCrawler",
             on_update=cr.AwsSdkCall(
                 service="Glue",
                 action="startCrawler",
@@ -74,21 +74,15 @@ class InfrastructureStack(Stack):
                 resources=cr.AwsCustomResourcePolicy.ANY_RESOURCE
             )
         )
-        output_bucket = s3.Bucket(self, "output_bucket");
-       # TODO: Parameterize output bucket by 1. creating the output bucket 2. adding it to default_arguments
+
         glue.Job(self, "PySparkEtlJob",
-            default_arguments={"--output_bucket": output_bucket.bucket_name},
             role=glue_role,
             executable=glue.JobExecutable.python_etl(
                 glue_version=glue.GlueVersion.V3_0,
                 python_version=glue.PythonVersion.THREE,
                 script=glue.Code.from_asset(os.path.join(os.path.dirname(__file__), "../glue_job_source/data_cleaning_and_lambda.py")),
-                # default_arguments=[]
             ),
             description="an example python ETL job"
         )
-        output_bucket.grant_write(glue_role);
-        
         
         CfnOutput(self, "aws/Config UPDATE", value="glue_role_arn=" + glue_role.role_arn)
-        CfnOutput(self, "output bucket", value="s3://" + output_bucket.bucket_name)

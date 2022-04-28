@@ -26,7 +26,6 @@ class GlueJobPipelineStack(Stack):
                 "Synth",
                 input=pipelines.CodePipelineSource.code_commit(repo, "master"),
                 commands=[
-                    "cd infrastructure",
                     "npm install -g aws-cdk",  # Installs the cdk cli on Codebuild
                     "pip install -r requirements-dev.txt",
                     "pip install -r requirements.txt",  # Instructs Codebuild to install required packages

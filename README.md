@@ -90,8 +90,16 @@ cdk destroy infrastructure
 
 1. Create a repo by deploying the pipeline stack
    ```bash
-   cdk deploy 
+   cdk deploy GlueJobPipelineStack
+   ```
 2. Push code to repo
+   ```bash
+   # Remove github origin
+   git remote remove origin
+   # Add code commit repo as origin
+   git remote add origin <YOUR CODE COMMIT REPO URL (THE COMMAND SHOULD BE FOUND IN THE PREVIOUS "cdk deploy GlueJobPipelineStack" output)>
+   git push -u master
+   ```
 3. Observe the deployment through code pipeline
 
 
