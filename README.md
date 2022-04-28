@@ -123,12 +123,13 @@ cdk destroy infrastructure
   1. Glue Job
 1. Add CI/CD using the [official doc](https://docs.aws.amazon.com/cdk/api/v2/python/aws_cdk.pipelines/README.html) or [workshop](https://cdkworkshop.com/30-python/70-advanced-topics/200-pipelines.html)  
 
-
 ## TODO
 
 [ ] Inject config (such as output_bucket, stage, database name etc ...)
 [ ] Add dev life cycle diagram and screenshots
-[ ] Add example for external file inclusion in notebook with aws s3 sync watch etc.
-[ ] Fix CDK unit tests
+[ ] Add example for external file inclusion in notebook with aws [s3Sync](https://pypi.org/project/pys3sync/) and [%extra_py_files](https://docs.aws.amazon.com/glue/latest/dg/interactive-sessions-magics.html) etc.
 [ ] Add integration tests to pipeline
 [ ] Describe how to add stage with manual approval
+[ ] Fix CDK unit tests
+
+Feel free to contribute !!!
