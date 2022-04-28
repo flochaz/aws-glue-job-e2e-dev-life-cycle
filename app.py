@@ -3,12 +3,12 @@
 import aws_cdk as cdk
 
 from infrastructure.infrastructure_stack import InfrastructureStack
-from infrastructure.pipeline_stack import WorkshopPipelineStack
+from infrastructure.pipeline_stack import GlueJobPipelineStack
 
 
 app = cdk.App()
 InfrastructureStack(app, "infrastructure")
-WorkshopPipelineStack(app, "WorkshopPipelineStack")
+GlueJobPipelineStack(app, "GlueJobPipelineStack")
 
 
 app.synth()

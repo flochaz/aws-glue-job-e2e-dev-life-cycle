@@ -61,16 +61,18 @@ AWS Glue service offer a way to run your job remotely while developping locally 
   ```bash
   pip install -r requirements-dev.txt
   SITE_PACKAGES=$(pip show aws-glue-sessions | grep Location | awk '{print $2}')
-  jupyter kernelspec install $SITE_PACKAGES/aws_glue_interactive_sessions_kernel/glue_pyspark
-  jupyter kernelspec install $SITE_PACKAGES/aws_glue_interactive_sessions_kernel/glue_spark 
+  jupyter kernelspec install $SITE_PACKAGES/aws_glue_interactive_sessions_kernel/glue_pyspark # Add "--user" if getting "[Errno 13] Permission denied: '/usr/local/share/jupyter'"
+  jupyter kernelspec install $SITE_PACKAGES/aws_glue_interactive_sessions_kernel/glue_spark # Add "--user" if getting "[Errno 13] Permission denied: '/usr/local/share/jupyter'"
   ```
-1. Setup glue role
+1. Setup glue role by copying the output called `awsConfigUPDATE` of the previous `cdk deploy` command into `~/.aws/config` under `[default]`
    ```bash 
-   glue_role_arn=
+   cat ~/.aws/config
+   [default]
+   glue_role_arn=xxxxxx
    ```
 1. Launch notebook
    ```bash
-   jupyter notebook
+   jupyter notebook # add "--ip 0.0.0.0" if running in a remote IDE such as cloud9 (PS: you will need to open your security group for TCP connection on 8888 port as well !)
    ```
 1. Play with `glue_job_source/data_cleaning_and_lambda.ipynb`
 1. Commit your changes to git
@@ -81,7 +83,14 @@ AWS Glue service offer a way to run your job remotely while developping locally 
 
 ### Deploy through pipeline
 
+If deploying to same account / region, first you will need to destroy your dev stack to avoid resource collision (especially glue role, crawler, database etc.)
+```bash
+cdk destroy infrastructure
+```
+
 1. Create a repo by deploying the pipeline stack
+   ```bash
+   cdk deploy 
 2. Push code to repo
 3. Observe the deployment through code pipeline
 
@@ -109,9 +118,9 @@ AWS Glue service offer a way to run your job remotely while developping locally 
 
 ## TODO
 
-[] Make sure dev and staging stack can be deploy in same account
-[] Fix argv input arguments usage in notebook
-[] Add example for external file inclusion in notebook with aws s3 sync watch etc.
-[] Fix CDK unit tests
-[] Add integration tests to pipeline
-[] Describe how to add stage with manual approval
+[ ] Inject config (such as output_bucket, stage, database name etc ...)
+[ ] Add dev life cycle diagram and screenshots
+[ ] Add example for external file inclusion in notebook with aws s3 sync watch etc.
+[ ] Fix CDK unit tests
+[ ] Add integration tests to pipeline
+[ ] Describe how to add stage with manual approval

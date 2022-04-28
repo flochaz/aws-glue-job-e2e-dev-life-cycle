@@ -4,7 +4,7 @@ from aws_cdk import (
 )
 from infrastructure.infrastructure_stack import InfrastructureStack
 
-class WorkshopPipelineStage(Stage):
+class GlueJobPipelineStage(Stage):
 
     def __init__(self, scope: Construct, id: str, **kwargs):
         super().__init__(scope, id, **kwargs)

@@ -1,5 +1,6 @@
 from constructs import Construct
 from aws_cdk import (
+    CfnOutput,
     Duration,
     Stack,
     aws_iam as iam,
@@ -87,3 +88,7 @@ class InfrastructureStack(Stack):
             description="an example python ETL job"
         )
         output_bucket.grant_write(glue_role);
+        
+        
+        CfnOutput(self, "aws/Config UPDATE", value="glue_role_arn=" + glue_role.role_arn)
+        CfnOutput(self, "output bucket", value="s3://" + output_bucket.bucket_name)
