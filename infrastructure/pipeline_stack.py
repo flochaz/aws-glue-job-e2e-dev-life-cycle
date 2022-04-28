@@ -30,9 +30,9 @@ class GlueJobPipelineStack(Stack):
                     "pip install -r requirements-dev.txt",
                     "pip install -r requirements.txt",  # Instructs Codebuild to install required packages
                     "jupyter nbconvert --to script ./glue_job_source/data_cleaning_and_lambda.ipynb",
-                    "npx cdk synth",
+                    "npx cdk synth GlueJobPipelineStack",
                 ],
-                primary_output_directory="infrastructure/cdk.out"
+                primary_output_directory="cdk.out"
             ),
         )
 
