@@ -12,7 +12,6 @@ Two options are proposed here: "Use this repo" or "Do it your self"
 
 ## Use This repo
 
-
 ### Prerequisites
 
 1. Clone this repo
@@ -20,11 +19,39 @@ Two options are proposed here: "Use this repo" or "Do it your self"
    git clone https://github.com/flochaz/aws-glue-job-e2e-dev-life-cycle.git
    cd aws-glue-job-e2e-dev-life-cycle
    ```
-2. setup virtual env
+1. setup virtual env
    ```bash
    python3 -m venv .venv
    source .venv/bin/activate
    ```
+1. Install CDK
+   ```bash
+   npm install -g aws-cdk
+   ```
+
+### deploy dev env
+
+In order to run glue job locally we will need some specific elements such as
+* an iam role to assume while running local notebook
+* a glue database to store the data
+* a glue crawler to extract the schema and data from raw source csv files
+* Trigger the crawler ...
+
+This CDK app will deploy all those for you to be ready to work on the glue job itself
+
+1. Install deps
+   ```bash
+   pip install -r requirements.txt
+   ```
+1. Bootstrap account
+   ```bash
+   cdk bootstrap
+   ```
+1. Deploy Glue role, crawler etc.
+
+```bash
+cdk deploy infrastructure
+```
 
 ### Local dev experience
 
@@ -37,24 +64,20 @@ AWS Glue service offer a way to run your job remotely while developping locally 
   jupyter kernelspec install $SITE_PACKAGES/aws_glue_interactive_sessions_kernel/glue_pyspark
   jupyter kernelspec install $SITE_PACKAGES/aws_glue_interactive_sessions_kernel/glue_spark 
   ```
-
-### setup cdk
-
-1. Install CDK
-2. Install deps
-   ```bash
-   pip install -r requirements.txt
+1. Setup glue role
+   ```bash 
+   glue_role_arn=
    ```
-3. Bootstrap account
+1. Launch notebook
    ```bash
-   cdk bootstrap
+   jupyter notebook
    ```
-
-### Deploy to dev env
-
-```bash
-cdk deploy infrastructure
-```
+1. Play with `glue_job_source/data_cleaning_and_lambda.ipynb`
+1. Commit your changes to git
+1. Optionally deploy your changes to dev env
+   ```bash
+   cdk deploy infrastructure
+   ```
 
 ### Deploy through pipeline
 
@@ -84,68 +107,11 @@ cdk deploy infrastructure
 1. Add CI/CD using the [official doc](https://docs.aws.amazon.com/cdk/api/v2/python/aws_cdk.pipelines/README.html) or [workshop](https://cdkworkshop.com/30-python/70-advanced-topics/200-pipelines.html)  
 
 
+## TODO
 
-
-
-You should explore the contents of this project. It demonstrates a CDK app with an instance of a stack (`infrastructure_stack`)
-which contains an Amazon SQS queue that is subscribed to an Amazon SNS topic.
-
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
-
-This project is set up like a standard Python project.  The initialization process also creates
-a virtualenv within this project, stored under the .venv directory.  To create the virtualenv
-it assumes that there is a `python3` executable in your path with access to the `venv` package.
-If for any reason the automatic creation of the virtualenv fails, you can create the virtualenv
-manually once the init process completes.
-
-To manually create a virtualenv on MacOS and Linux:
-
-```
-$ python3 -m venv .venv
-```
-
-After the init process completes and the virtualenv is created, you can use the following
-step to activate your virtualenv.
-
-```
-$ source .venv/bin/activate
-```
-
-If you are a Windows platform, you would activate the virtualenv like this:
-
-```
-% .venv\Scripts\activate.bat
-```
-
-Once the virtualenv is activated, you can install the required dependencies.
-
-```
-$ pip install -r requirements.txt
-```
-
-At this point you can now synthesize the CloudFormation template for this code.
-
-```
-$ cdk synth
-```
-
-You can now begin exploring the source code, contained in the hello directory.
-There is also a very trivial test included that can be run like this:
-
-```
-$ pytest
-```
-
-To add additional dependencies, for example other CDK libraries, just add to
-your requirements.txt file and rerun the `pip install -r requirements.txt`
-command.
-
-## Useful commands
-
- * `cdk ls`          list all stacks in the app
- * `cdk synth`       emits the synthesized CloudFormation template
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk docs`        open CDK documentation
-
-Enjoy!
+[] Make sure dev and staging stack can be deploy in same account
+[] Fix argv input arguments usage in notebook
+[] Add example for external file inclusion in notebook with aws s3 sync watch etc.
+[] Fix CDK unit tests
+[] Add integration tests to pipeline
+[] Describe how to add stage with manual approval
