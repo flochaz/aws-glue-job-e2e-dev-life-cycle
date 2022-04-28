@@ -1,0 +1,4 @@
+pytest==6.2.5
+jupyter==1.0.0
+boto3==1.22.2
+aws-glue-sessions==0.30

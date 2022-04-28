@@ -81,7 +81,7 @@ class InfrastructureStack(Stack):
             executable=glue.JobExecutable.python_etl(
                 glue_version=glue.GlueVersion.V3_0,
                 python_version=glue.PythonVersion.THREE,
-                script=glue.Code.from_asset(os.path.join(os.path.dirname(__file__), "../../examples/data_cleaning_and_lambda.py")),
+                script=glue.Code.from_asset(os.path.join(os.path.dirname(__file__), "../glue_job_source/data_cleaning_and_lambda.py")),
                 # default_arguments=[]
             ),
             description="an example python ETL job"

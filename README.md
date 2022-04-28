@@ -1,93 +1,151 @@
-# AWS Glue ETL Code Samples
 
-This repository has samples that demonstrate various aspects of the new
-[AWS Glue](https://aws.amazon.com/glue) service, as well as various
-AWS Glue utilities.
+# How to develop, and deploy properly AWS Glue Job using AWS Glue interactive sessions and AWS CDK
 
-You can find the AWS Glue open-source Python libraries in a separate
-repository at: [awslabs/aws-glue-libs](https://github.com/awslabs/aws-glue-libs).
+This repo aim to demonstrate how to develop AWS Glue Job efficiently:
+* Be able to develop locally
+* Get a fast feedback loop
+* Be able to commit with no manual copy paste between tools
 
-### Content
+In addition this repo shows how to deploy this AWS Glue Job through a proper CI/CD pipeline leveraging Infrastructure as code.
 
- - [FAQ and How-to](FAQ_and_How_to.md)
+Two options are proposed here: "Use this repo" or "Do it your self"
 
-   Helps you get started using the many ETL capabilities of AWS Glue, and
-   answers some of the more common questions people have.
+## Use This repo
 
-### Examples
- You can run these sample job scripts on any of AWS Glue ETL jobs, [container](https://aws.amazon.com/blogs/big-data/developing-aws-glue-etl-jobs-locally-using-a-container/), or [local environment](https://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-etl-libraries.html).
 
- - [Join and Relationalize Data in S3](examples/join_and_relationalize.md)
+### Prerequisites
 
-   This sample ETL script shows you how to use AWS Glue to load, transform,
-   and rewrite data in AWS S3 so that it can easily and efficiently be queried
-   and analyzed.
+1. Clone this repo
+   ```bash
+   git clone https://github.com/flochaz/aws-glue-job-e2e-dev-life-cycle.git
+   cd aws-glue-job-e2e-dev-life-cycle
+   ```
+2. setup virtual env
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate
+   ```
 
- - [Clean and Process](examples/data_cleaning_and_lambda.md)
+### Local dev experience
 
-   This sample ETL script shows you how to take advantage of both Spark and
-   AWS Glue features to clean and transform data for efficient analysis.
+AWS Glue service offer a way to run your job remotely while developping locally through the [Interactive Sessions feature](https://docs.aws.amazon.com/glue/latest/dg/interactive-sessions.html).
 
- - [The `resolveChoice` Method](examples/resolve_choice.md)
+1. Set up interactive session:
+  ```bash
+  pip install -r requirements-dev.txt
+  SITE_PACKAGES=$(pip show aws-glue-sessions | grep Location | awk '{print $2}')
+  jupyter kernelspec install $SITE_PACKAGES/aws_glue_interactive_sessions_kernel/glue_pyspark
+  jupyter kernelspec install $SITE_PACKAGES/aws_glue_interactive_sessions_kernel/glue_spark 
+  ```
 
-   This sample explores all four of the ways you can resolve choice types
-   in a dataset using DynamicFrame's `resolveChoice` method.
+### setup cdk
 
- - [Converting character encoding](examples/converting_char_encoding.md)
- 
-   This sample ETL script shows you how to use AWS Glue job to convert character encoding.
+1. Install CDK
+2. Install deps
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Bootstrap account
+   ```bash
+   cdk bootstrap
+   ```
 
-### Utilities
+### Deploy to dev env
 
- - [Hive metastore migration](utilities/Hive_metastore_migration/README.md)
+```bash
+cdk deploy infrastructure
+```
 
-   This utility can help you migrate your Hive metastore to the
-   AWS Glue Data Catalog.
+### Deploy through pipeline
 
- - [Crawler undo and redo](utilities/Crawler_undo_redo/README.md)
+1. Create a repo by deploying the pipeline stack
+2. Push code to repo
+3. Observe the deployment through code pipeline
 
-   These scripts can undo or redo the results of a crawl under
-   some circumstances.
 
- - [Spark UI](utilities/Spark_UI/README.md)
+## Do it your self
 
-   You can use this Dockerfile to run Spark history server in your container.
-   See details: [Launching the Spark History Server and Viewing the Spark UI Using Docker ](https://docs.aws.amazon.com/glue/latest/dg/monitor-spark-ui-history.html#monitor-spark-ui-history-local)
+1. Get into your aws account
+1. Setup your online IDE: [Cloud 9](https://catalog.us-east-1.prod.workshops.aws/workshops/071bbc60-6c1f-47b6-8c66-e84f5dc96b3f/en-US/10-introduction-and-setup/10-cloud-9)
+1. Add your glue job (you can take this one for instance https://github.com/aws-samples/aws-glue-samples/blob/master/examples/data_cleaning_and_lambda.py)
+1. Add interactive sessions + notebook CI/CD (optional)
+  1. https://docs.aws.amazon.com/glue/latest/dg/interactive-sessions.html 
+  1. Quick hack
+    1. `vim ~/.aws/config` glue_role_arn
+    1. `vim ~/.aws/credentials`
+    1. `jupyter notebook —ip 0.0.0.0`
+    1. `jupyter nbconvert --to script ./data_cleaning_and_lambda.ipynb`
+1. Create your first [CDK app](https://cdkworkshop.com/30-python/20-create-project.html)
+1. Add glue infrastructure: https://docs.aws.amazon.com/cdk/api/v2/python/aws_cdk.aws_glue_alpha/README.html 
+  1. Glue database
+  1. Glue Role
+  1. Glue Crawler
+  1. Glue Job
+1. Add CI/CD using the [official doc](https://docs.aws.amazon.com/cdk/api/v2/python/aws_cdk.pipelines/README.html) or [workshop](https://cdkworkshop.com/30-python/70-advanced-topics/200-pipelines.html)  
 
-- [use only IAM access controls](utilities/use_only_IAM_access_controls/README.md)
 
-  AWS Lake Formation applies its own permission model when you access data in Amazon S3 and metadata in AWS Glue Data Catalog through use of Amazon EMR, Amazon Athena and so on.
-  If you currently use Lake Formation and instead would like to use only IAM Access controls, this tool enables you to achieve it.
 
-- [Glue Job Version Deprecation Checker](utilities/glue_version_deprecation_checker/README.md)
 
-  This command line utility helps you to identify the target Glue jobs which will be deprecated per [AWS Glue version support policy](https://docs.aws.amazon.com/glue/latest/dg/glue-version-support-policy.html).
 
-### GlueCustomConnectors
-AWS Glue provides [built-in support](https://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-etl-connect.html) for the most commonly used data stores such as Amazon Redshift, MySQL, MongoDB. Powered by Glue ETL Custom Connector, you can subscribe a third-party connector from AWS Marketplace or build your own connector to connect to data stores that are not natively supported.
+You should explore the contents of this project. It demonstrates a CDK app with an instance of a stack (`infrastructure_stack`)
+which contains an Amazon SQS queue that is subscribed to an Amazon SNS topic.
 
- ![marketplace](GlueCustomConnectors/marketplace.jpg)
- 
- - [Development](GlueCustomConnectors/development/README.md)
+The `cdk.json` file tells the CDK Toolkit how to execute your app.
 
-   Development guide with examples of connectors with simple, intermediate, and advanced functionalities. These examples demonstrate how to implement Glue Custom Connectors based on Spark Data Source or [Amazon Athena Federated Query](https://github.com/awslabs/aws-athena-query-federation) interfaces and plug them into Glue Spark runtime.
+This project is set up like a standard Python project.  The initialization process also creates
+a virtualenv within this project, stored under the .venv directory.  To create the virtualenv
+it assumes that there is a `python3` executable in your path with access to the `venv` package.
+If for any reason the automatic creation of the virtualenv fails, you can create the virtualenv
+manually once the init process completes.
 
- - [Local Validation Tests](GlueCustomConnectors/localValidation/README.md)
+To manually create a virtualenv on MacOS and Linux:
 
-   This user guide describes validation tests that you can run locally on your laptop to integrate your connector with Glue Spark runtime.
-   
- - [Validation](GlueCustomConnectors/glueJobValidation/README.md)
+```
+$ python3 -m venv .venv
+```
 
-   This user guide shows how to validate connectors with Glue Spark runtime in a Glue job system before deploying them for your workloads.
+After the init process completes and the virtualenv is created, you can use the following
+step to activate your virtualenv.
 
- - [Glue Spark Script Examples](GlueCustomConnectors/gluescripts/README.md)
+```
+$ source .venv/bin/activate
+```
 
-   Python scripts examples to use Spark, Amazon Athena and JDBC connectors with Glue Spark runtime.
+If you are a Windows platform, you would activate the virtualenv like this:
 
- - [Create and Publish Glue Connector to AWS Marketplace](GlueCustomConnectors/marketplace)
+```
+% .venv\Scripts\activate.bat
+```
 
-   If you would like to partner or publish your Glue custom connector to AWS Marketplace, please refer to this guide and reach out to us at glue-connectors@amazon.com for further details on your connector.
+Once the virtualenv is activated, you can install the required dependencies.
 
-## License Summary
+```
+$ pip install -r requirements.txt
+```
 
-This sample code is made available under the MIT-0 license. See the LICENSE file.
+At this point you can now synthesize the CloudFormation template for this code.
+
+```
+$ cdk synth
+```
+
+You can now begin exploring the source code, contained in the hello directory.
+There is also a very trivial test included that can be run like this:
+
+```
+$ pytest
+```
+
+To add additional dependencies, for example other CDK libraries, just add to
+your requirements.txt file and rerun the `pip install -r requirements.txt`
+command.
+
+## Useful commands
+
+ * `cdk ls`          list all stacks in the app
+ * `cdk synth`       emits the synthesized CloudFormation template
+ * `cdk deploy`      deploy this stack to your default AWS account/region
+ * `cdk diff`        compare deployed stack with current state
+ * `cdk docs`        open CDK documentation
+
+Enjoy!
