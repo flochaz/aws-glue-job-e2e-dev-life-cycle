@@ -36,7 +36,7 @@ class GlueJobPipelineStack(Stack):
             ),
         )
 
-        deploy = GlueJobPipelineStage(self, "Staging")
-        deploy_stage = pipeline.add_stage(deploy)
+        stagingStage = GlueJobPipelineStage(self, "Staging") # you can pass the env named parameter at stage creation to deploy to another account or region (don't forget to bootstrap the target account with --trust option)
+        deploy_stage = pipeline.add_stage(stagingStage)
         
         CfnOutput(self, "glue job repo", value="git remote add origin " + repo.repository_clone_url_grc)
