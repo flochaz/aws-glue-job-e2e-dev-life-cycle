@@ -1,6 +1,8 @@
 
 # How to develop, and deploy properly AWS Glue Job using AWS Glue interactive sessions and AWS CDK
 
+__*PS: A SAM version is available on `sam` branch*__
+
 This repo aim to demonstrate how to develop AWS Glue Job efficiently:
 * Be able to develop locally
 * Get a fast feedback loop
