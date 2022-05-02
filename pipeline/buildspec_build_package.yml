@@ -5,8 +5,8 @@ phases:
       python: 3.8
     commands:
       - pip install --upgrade pip
-      - pip install --upgrade awscli aws-sam-cli
       - pip install -r requirements-dev.txt
+      - pip install --upgrade awscli aws-sam-cli
       # Enable docker https://docs.aws.amazon.com/codebuild/latest/userguide/sample-docker-custom-image.html
       - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --storage-driver=overlay2 &
       - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
