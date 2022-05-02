@@ -52,8 +52,19 @@ Resources:
               - s3:List*
             Effect: Allow
             Resource:
-              - !Sub "${EnvBucket}"
-              - !Sub "${EnvBucket}/*"
+              - !Join
+                - ''
+                - - 'arn:'
+                  - !Ref 'AWS::Partition'
+                  - ':s3:::'
+                  - !Sub '${EnvBucket}'
+                  - /*
+              - !Join
+                - ''
+                - - 'arn:'
+                  - !Ref 'AWS::Partition'
+                  - ':s3:::'
+                  - !Sub '${EnvBucket}'
           - Action:
               - s3:GetObject
               - s3:PutObject
