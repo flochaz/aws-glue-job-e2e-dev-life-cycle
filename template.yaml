@@ -38,11 +38,20 @@ Resources:
               - sts:AssumeRole
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole
+
   GlueRoleAllowCrawlingPolicy:
     Type: AWS::IAM::Policy
     Properties:
       PolicyDocument:
         Statement:
+          - Action:
+              - s3:GetBucket*
+              - s3:GetObject*
+              - s3:List*
+            Effect: Allow
+            Resource:
+              - aws-sam-cli-managed-*/*
+              - aws-sam-cli-managed-*
           - Action:
               - s3:GetObject
               - s3:PutObject
