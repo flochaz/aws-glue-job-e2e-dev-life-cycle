@@ -4,7 +4,9 @@ Description: >
   sam-glue
 
   Sample SAM Template for sam-glue
-
+Parameters:
+ EnvBucket:
+   Type: String
 Resources:
   PaymentsDatabase:
     Type: AWS::Glue::Database
@@ -50,8 +52,8 @@ Resources:
               - s3:List*
             Effect: Allow
             Resource:
-              - aws-sam-cli-managed-*/*
-              - aws-sam-cli-managed-*
+              - !Sub "${EnvBucket}"
+              - !Sub "${EnvBucket}/*"
           - Action:
               - s3:GetObject
               - s3:PutObject

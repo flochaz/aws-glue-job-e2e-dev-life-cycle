@@ -8,3 +8,4 @@ s3_prefix = "sam-glue-dev"
 region = "eu-west-3"
 capabilities = "CAPABILITY_IAM"
 image_repositories = []
+paramters_overrides = "EnvBucket=aws-sam-cli-managed-default-samclisourcebucket-k9jc8e8yubkd"
