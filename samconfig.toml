@@ -1,0 +1,10 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "sam-glue-dev"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-k9jc8e8yubkd"
+s3_prefix = "sam-glue-dev"
+region = "eu-west-3"
+capabilities = "CAPABILITY_IAM"
+image_repositories = []

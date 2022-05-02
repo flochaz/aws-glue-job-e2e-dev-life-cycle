@@ -1,0 +1,34 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  sam-glue
+
+  Sample SAM Template for sam-glue
+
+Resources:
+  GlueJob:
+    Type: AWS::Glue::Job
+    Properties:
+      GlueVersion: '3.0'
+      MaxCapacity: 5
+      Command:
+        Name: glueetl
+        PythonVersion: '3'
+        ScriptLocation: hello_world/
+      Role: !GetAtt GlueServiceRole.Arn
+
+  GlueServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Path: /service-role/
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - glue.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole
