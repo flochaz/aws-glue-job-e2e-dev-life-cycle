@@ -6,6 +6,12 @@ Description: >
   Sample SAM Template for sam-glue
 
 Resources:
+  PaymentsDatabase:
+    Type: AWS::Glue::Database
+    Properties:
+      CatalogId: !Ref 'AWS::AccountId'
+      DatabaseInput:
+        Name: payments
   GlueJob:
     Type: AWS::Glue::Job
     Properties:
@@ -14,7 +20,7 @@ Resources:
       Command:
         Name: glueetl
         PythonVersion: '3'
-        ScriptLocation: hello_world/
+        ScriptLocation: glue_job_source/data_cleaning_and_lambda.py
       Role: !GetAtt GlueServiceRole.Arn
 
   GlueServiceRole:
@@ -32,3 +38,35 @@ Resources:
               - sts:AssumeRole
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole
+  GlueRoleAllowCrawlingPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - s3:GetObject
+              - s3:PutObject
+            Effect: Allow
+            Resource: arn:aws:s3:::awsglue-datasets/examples/medicare/*
+        Version: '2012-10-17'
+      PolicyName: GlueRoleAllowCrawlingPolicy
+      Roles:
+        - !Ref 'GlueServiceRole'
+  MedicareCrawler:
+    Type: AWS::Glue::Crawler
+    Properties:
+      Role: !GetAtt 'GlueServiceRole.Arn'
+      Targets:
+        S3Targets:
+          - Path: s3://awsglue-datasets/examples/medicare/
+      DatabaseName: !Ref 'PaymentsDatabase'
+      Name: crawler_medicare
+
+Outputs:
+  awsConfigUPDATE:
+    Value: !Join
+      - ''
+      - - glue_role_arn=
+        - !GetAtt 'GlueServiceRole.Arn'
+
+
