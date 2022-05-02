@@ -6,11 +6,13 @@ phases:
     commands:
       - pip install --upgrade pip
       - pip install --upgrade awscli aws-sam-cli
+      - pip install -r requirements-dev.txt
       # Enable docker https://docs.aws.amazon.com/codebuild/latest/userguide/sample-docker-custom-image.html
       - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --storage-driver=overlay2 &
       - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
   build:
     commands:
+      - jupyter nbconvert --to script ./glue_job_source/data_cleaning_and_lambda.ipynb
       - sam build --use-container --template ${SAM_TEMPLATE}
       - . ./assume-role.sh ${TESTING_PIPELINE_EXECUTION_ROLE} test-package
       - sam package --s3-bucket ${TESTING_ARTIFACT_BUCKET}
