@@ -113,10 +113,10 @@ cdk destroy infrastructure
 1. Add interactive sessions + notebook CI/CD (optional)
   1. https://docs.aws.amazon.com/glue/latest/dg/interactive-sessions.html 
   1. Quick hack
-    1. `vim ~/.aws/config` glue_role_arn
-    1. `vim ~/.aws/credentials`
-    1. `jupyter notebook —ip 0.0.0.0`
-    1. `jupyter nbconvert --to script ./data_cleaning_and_lambda.ipynb`
+     1. `vim ~/.aws/config` glue_role_arn
+     1. `vim ~/.aws/credentials`
+     1. `jupyter notebook —ip 0.0.0.0`
+     1. `jupyter nbconvert --to script ./data_cleaning_and_lambda.ipynb`
 1. Create your first [CDK app](https://cdkworkshop.com/30-python/20-create-project.html)
 1. Add glue infrastructure: https://docs.aws.amazon.com/cdk/api/v2/python/aws_cdk.aws_glue_alpha/README.html 
   1. Glue database
