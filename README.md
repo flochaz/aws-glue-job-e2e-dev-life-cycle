@@ -127,11 +127,11 @@ cdk destroy infrastructure
 
 ## TODO
 
-[ ] Inject config (such as output_bucket, stage, database name etc ...)
-[ ] Add dev life cycle diagram and screenshots
-[ ] Add example for external file inclusion in notebook with aws [s3Sync](https://pypi.org/project/pys3sync/) and [%extra_py_files](https://docs.aws.amazon.com/glue/latest/dg/interactive-sessions-magics.html) etc.
-[ ] Add integration tests to pipeline
-[ ] Describe how to add stage with manual approval
-[ ] Fix CDK unit tests
+- [ ] Inject config (such as output_bucket, stage, database name etc ...)
+- [ ] Add dev life cycle diagram and screenshots
+- [ ] Add example for external file inclusion in notebook with aws [s3Sync](https://pypi.org/project/pys3sync/) and [%extra_py_files](https://docs.aws.amazon.com/glue/latest/dg/interactive-sessions-magics.html) etc.
+- [ ] Add integration tests to pipeline
+- [ ] Describe how to add stage with manual approval
+- [ ] Fix CDK unit tests
 
 Feel free to contribute !!!
